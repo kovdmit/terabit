@@ -9,7 +9,7 @@ User = get_user_model()
 def user_log_in(email, password):
     try:
         user = User.objects.get(email=email)
-    except User.DoesNotExists:
+    except User.DoesNotExist:
         raise ValueError('User not found')
 
     if user.check_password(password):
@@ -23,8 +23,7 @@ class LoginTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='auth',
-                                            email='e@ma.il',
+        cls.user = User.objects.create_user(email='e@ma.il',
                                             password='123')
 
     def test_get_user_false(self):
@@ -33,7 +32,7 @@ class LoginTest(TestCase):
                                'User not found',
                                user_log_in('False', 'False'))
 
-    def test_get_user_true(self):
+    def test_send_email(self):
         """Проверяем результат отправки сообщения."""
         user_false = user_log_in(self.user.email, 'False')
         user_true = user_log_in(self.user.email, self.user.password)
