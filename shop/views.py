@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.conf import settings
 from django.http import JsonResponse
@@ -22,7 +23,10 @@ def pay(request, pk):
         if form.is_valid():
             value = form.cleaned_data.get('value')
             if user.balance.value < value:
+                messages.error(request, 'Недостаточно средств')
+                # смотря какая нужна ошибка
                 raise ValueError('Недостаточно средств')
+            messages.success(request, 'Успех')
             user.balance.balance_minus(value)
     form = BalanceForm()
     current_balance = user.balance.value
